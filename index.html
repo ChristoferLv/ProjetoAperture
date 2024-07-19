@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto Aperture</title>
+    <link rel="icon" type="image/svg+xml" href="figures/iconea.png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #e6e6e6;
+        }
+
+        header {
+            background-color: #111;
+            color: #e6e6e6;
+            padding: 10px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header img {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            background-color: #111;
+            color: #e6e6e6;
+            margin-top: 20px;
+        }
+
+        .option-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+        }
+
+        .option {
+            flex: 1;
+            background-color: #222;
+            padding: 50px;
+            margin: 0 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .option:hover {
+            background-color: #333;
+        }
+
+        .option h2 {
+            font-size: 32px;
+            color: #e6e6e6;
+        }
+
+        #content {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <a href="/" style="text-decoration: none; color: inherit;">
+                <div class="d-flex align-items-center">
+                    <img src="figures/icone.png" alt="Aperture Logo">
+                    <h1 class="ml-2">Projeto Aperture</h1>
+                </div>
+            </a>
+            <a href="https://github.com/ChristoferLv/Aperture-Releases" target="_blank">
+                <i class="bi bi-github" style="color: white; font-size: 2rem;"></i>
+            </a>
+        </div>
+    </header>
+
+    <div id="content" class="container">
+        <h4>Esse site servirá para armazenamento dos recursos desenvolvidos para o projeto Aperture.</h4>
+        <h4>A listagem dos componente no site irá atualizar automaticamente de acordo com os lançamentos no github do projeto. Novos componentes e implementaçãos poderão ser encontradas nas suas respectivas listagem.</h4>
+        <div class="option-container">
+            <div class="option" id="mips-option">
+                <h2>MIPS</h2>
+            </div>
+            <div class="option" id="riscv-option">
+                <h2>RISC-V</h2>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Autor: Christofer Daniel
+    </footer>
+
+    <script>
+        document.getElementById('mips-option').addEventListener('click', function () {
+            fetch('mips.html')
+                .then(response => response.text())
+                .then(html => {
+                    const contentDiv = document.getElementById('content');
+                    contentDiv.innerHTML = html;
+                    console.log(contentDiv)
+
+                    // Executa o JavaScript contido no HTML carregado
+                    const scripts = contentDiv.getElementsByTagName('script');
+                    for (let script of scripts) {
+                        eval(script.innerHTML);
+                    }
+                })
+                .catch(error => console.error('Erro ao carregar conteúdo:', error));
+        });
+
+        document.getElementById('riscv-option').addEventListener('click', function () {
+            // Lógica para carregar conteúdo relacionado ao RISC-V
+            alert('Em breve!');
+        });
+    </script>
+</body>
+
+</html>

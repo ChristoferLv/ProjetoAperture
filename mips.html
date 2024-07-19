@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto Aperture</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #e6e6e6;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        table {
+            background-color: #222;
+        }
+
+        th,
+        td {
+            color: #e6e6e6;
+        }
+
+        .btn-primary,
+        .btn-secondary,
+        .btn-info {
+            background-color: #444;
+            border: none;
+        }
+
+        .btn-primary:hover,
+        .btn-secondary:hover,
+        .btn-info:hover {
+            background-color: #555;
+        }
+
+        .btn-outline-secondary {
+            border-color: #555;
+            color: #e6e6e6;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #555;
+            color: #e6e6e6;
+        }
+
+        .table-container {
+            max-height: 30rem;
+            /* Defina a altura máxima para a tabela */
+            overflow-y: auto;
+            /* Adicione a barra de rolagem vertical */
+        }
+
+        /* Estilizando a barra de rolagem */
+        .table-container::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: #333;
+            /* Cor da trilha */
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background-color: #555;
+            /* Cor do polegar */
+            border-radius: 10px;
+            border: 2px solid #333;
+            /* Adicionando uma borda */
+        }
+
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #777;
+            /* Cor do polegar ao passar o mouse */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+
+        
+        <div class="container-fluid">
+            <div class="row justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <h3 id="current-path" class="mt-3"></h3>
+                    <a class="btn btn-info mt-3 ml-2" id="github-button" target="_blank"><i class="bi bi-arrow-up-left-square"></i> Ver esta pasta</a>
+                </div>
+                <button class="btn btn-secondary mt-3" id="back-button" style="display: none;">Voltar</button>
+            </div>
+        </div>
+        <div class="table-container">
+            <table class="table table-striped mt-3">
+                <thead>
+                    <tr>
+                        <th>Arquivo</th>
+                        <th> </th>
+                    </tr>
+                </thead>
+                <tbody id="file-list">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        const owner = 'ChristoferLv';
+        const repo = 'Aperture-Releases';
+        const branch = 'main';
+        let pathStack = [];
+
+        function fetchFiles(path = '') {
+            const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`;
+
+            fetch(url, {
+                headers: {
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const fileList = document.getElementById('file-list');
+                    fileList.innerHTML = '';
+                    data.forEach(file => {
+                        const tr = document.createElement('tr');
+                        const tdName = document.createElement('td');
+                        const tdAction = document.createElement('td');
+                        const a = document.createElement('a');
+
+                        if (file.type === 'dir') {
+                            a.href = '#';
+                            a.innerHTML = `<i class="bi bi-folder-fill"></i> ${file.name}`;
+                            a.addEventListener('click', (event) => {
+                                event.preventDefault();
+                                pathStack.push(path);
+                                fetchFiles(file.path);
+                                document.getElementById('back-button').style.display = 'block';
+                                //document.getElementById('github-button').style.display = 'block';
+                                document.getElementById('github-button').href = `https://github.com/${owner}/${repo}/tree/${branch}/${file.path}`;
+                            });
+                            const githubLink = document.createElement('a');
+                            githubLink.href = `https://github.com/${owner}/${repo}/tree/${branch}/${file.path}`;
+                            githubLink.textContent = 'Abrir no GitHub';
+                            githubLink.className = 'btn btn-sm btn-outline-secondary ml-2';
+                            githubLink.target = '_blank';
+                            tdAction.appendChild(githubLink);
+                        } else if (file.type === 'file') {
+                            a.href = `https://github.com/${owner}/${repo}/blob/${branch}/${file.path}`;
+                            a.innerHTML = `<i class="bi bi-file-earmark-code-fill"></i> ${file.name}`;
+                            a.target = '_blank'; // Abre em uma nova aba
+
+                            const downloadLink = document.createElement('a');
+                            downloadLink.href = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${file.path}`;
+                            downloadLink.textContent = 'Download';
+                            downloadLink.className = 'btn btn-sm btn-outline-secondary ml-2';
+                            downloadLink.download = file.name;
+
+                            tdAction.appendChild(downloadLink);
+                        }
+
+                        tdName.appendChild(a);
+                        tr.appendChild(tdName);
+                        tr.appendChild(tdAction);
+                        fileList.appendChild(tr);
+                    });
+
+                    // Atualiza o caminho atual e o href do botão "Ir para o GitHub da Pasta Atual"
+                    //const githubButton = document.getElementById('github-button');
+                    const currentPathDisplay = document.getElementById('current-path');
+                    currentPathDisplay.textContent = `Listando: ${(path ? path : 'main')}`;
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar arquivos do repositório:', error);
+                });
+        }
+
+        // Carrega arquivos automaticamente na inicialização
+        fetchFiles();
+        document.getElementById('github-button').href = `https://github.com/${owner}/${repo}/tree/main`;
+        
+        document.getElementById('back-button').addEventListener('click', function () {
+            if (pathStack.length > 0) {
+                const prevPath = pathStack.pop();
+                fetchFiles(prevPath);
+                if (pathStack.length === 0) {
+                    document.getElementById('back-button').style.display = 'none';
+                    document.getElementById('github-button').href = `https://github.com/${owner}/${repo}/tree/main`;
+                    //document.getElementById('github-button').style.display = 'none';
+                    document.getElementById('current-path').textContent = '';
+                } else {
+                    document.getElementById('github-button').href = `https://github.com/${owner}/${repo}/tree/${branch}/${prevPath}`;
+                    document.getElementById('current-path').textContent = `Pasta atual: ${prevPath}`;
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
