@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projeto Aperture</title>
-    <link rel="icon" type="image/svg+xml" href="figures/iconea.png">
+    <link rel="icon" type="image/svg+xml" href="assets/iconea.png">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
     <style>
@@ -75,7 +75,7 @@
         }
 
         #content {
-            margin-top: 50px;
+            margin-top: 30px;
         }
     </style>
 </head>
@@ -85,7 +85,7 @@
         <div class="container">
             <a href="/" style="text-decoration: none; color: inherit;">
                 <div class="d-flex align-items-center">
-                    <img src="figures/icone.png" alt="Aperture Logo">
+                    <img src="assets/icone.png" alt="Aperture Logo">
                     <h1 class="ml-2">Projeto Aperture</h1>
                 </div>
             </a>
@@ -119,8 +119,7 @@
                 .then(html => {
                     const contentDiv = document.getElementById('content');
                     contentDiv.innerHTML = html;
-                    console.log(contentDiv)
-
+                    
                     // Executa o JavaScript contido no HTML carregado
                     const scripts = contentDiv.getElementsByTagName('script');
                     for (let script of scripts) {

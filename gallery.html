@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeria - Projeto Aperture</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #e6e6e6;
+        }
+
+        header {
+            background-color: #111;
+            color: #e6e6e6;
+            padding: 10px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header img {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: auto;
+            border: 2px solid #555;
+            border-radius: 5px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #111;
+            color: #e6e6e6;
+            margin-top: 20px;
+        }
+        
+        .btn-primary,
+        .btn-secondary,
+        .btn-info {
+            background-color: #444;
+            border: none;
+        }
+
+        .btn-primary:hover,
+        .btn-secondary:hover,
+        .btn-info:hover {
+            background-color: #555;
+        }
+
+        .btn-outline-secondary {
+            border-color: #555;
+            color: #e6e6e6;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #555;
+            color: #e6e6e6;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mt-5">
+        <h2>Galeria de Fotos</h2>
+        <button class="btn btn-secondary mt-3" id="back-button-list">Voltar</button>
+        <div class="gallery" id="gallery">
+            <!-- Imagens serão carregadas aqui -->
+        </div>
+    </div>
+</body>
+
+<script>
+    document.getElementById('back-button-list').addEventListener('click', function () {
+            fetch('mips.html')
+                .then(response => response.text())
+                .then(html => {
+                    const contentDiv = document.getElementById('content');
+                    contentDiv.innerHTML = html;
+                    
+                    // Executa o JavaScript contido no HTML carregado
+                    const scripts = contentDiv.getElementsByTagName('script');
+                    for (let script of scripts) {
+                        eval(script.innerHTML);
+                    }
+                })
+                .catch(error => console.error('Erro ao carregar conteúdo:', error));
+        });
+</script>
+</html>

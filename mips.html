@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projeto Aperture</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
     <style>
         body {
             background-color: #1a1a1a;
@@ -78,18 +79,45 @@
             background: #777;
             /* Cor do polegar ao passar o mouse */
         }
+
+       .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .gallery-item {
+            text-align: center;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: auto;
+            border: 2px solid #555;
+            border-radius: 5px;
+        }
+
+        .gallery-caption {
+            margin-top: 5px;
+            color: #e6e6e6;
+            font-size: 14px;
+        }
     </style>
 </head>
 
 <body>
-    <div class="container mt-5">
-
-        
+    <div class="container mt-0">
         <div class="container-fluid">
+            <div class="row justify-content-between align-items-center">
+                <h3>Vendo o conteúdo para MIPS</h3>
+                <button id="galeriaBtn" class="btn btn-primary mt-3">Galeria</button>
+            </div>
             <div class="row justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
                     <h3 id="current-path" class="mt-3"></h3>
-                    <a class="btn btn-info mt-3 ml-2" id="github-button" target="_blank"><i class="bi bi-arrow-up-left-square"></i> Ver esta pasta</a>
+                    <a class="btn btn-info mt-3 ml-2" id="github-button" target="_blank"><i
+                            class="bi bi-arrow-up-left-square"></i> Ver esta pasta</a>
                 </div>
                 <button class="btn btn-secondary mt-3" id="back-button" style="display: none;">Voltar</button>
             </div>
@@ -107,12 +135,12 @@
             </table>
         </div>
     </div>
+  
     <script>
         const owner = 'ChristoferLv';
         const repo = 'Aperture-Releases';
         const branch = 'main';
         let pathStack = [];
-
         function fetchFiles(path = '') {
             const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`;
 
@@ -171,17 +199,73 @@
                     // Atualiza o caminho atual e o href do botão "Ir para o GitHub da Pasta Atual"
                     //const githubButton = document.getElementById('github-button');
                     const currentPathDisplay = document.getElementById('current-path');
-                    currentPathDisplay.textContent = `Listando: ${(path ? path : 'main')}`;
+                    currentPathDisplay.textContent = `Listandoo: ${(path ? path : 'main')}`;
                 })
                 .catch(error => {
                     console.error('Erro ao buscar arquivos do repositório:', error);
                 });
         }
 
+        document.getElementById('galeriaBtn').addEventListener('click', (event) => {
+            fetch('gallery.html')
+                .then(response => response.text())
+                .then(html => {
+                    const contentDiv = document.getElementById('content');
+                    contentDiv.innerHTML = html;
+
+                    const scripts = contentDiv.getElementsByTagName('script');
+                    for (let script of scripts) {
+                        eval(script.innerHTML);
+                    }
+                    loadImages("MIPS");
+                })
+                .catch(error => console.error('Erro ao carregar a galeria:', error));
+        });
+
+        function loadImages(type) {
+            const gallery = document.getElementById('gallery');
+            const path = `pictures/${type}`;
+            const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`;
+        
+            fetch(url, {
+                headers: {
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                gallery.innerHTML = '';
+                data.forEach(file => {
+                    if (file.type === 'file' && file.name.match(/\.(jpg|jpeg|png|gif)$/)) {
+                        const imgElement = document.createElement('img');
+                        imgElement.src = file.download_url;
+                        imgElement.className = 'gallery-image';
+        
+                        // Adiciona um event listener para abrir a imagem em uma nova aba quando clicada
+                        imgElement.addEventListener('click', () => {
+                            window.open(file.download_url, '_blank');
+                        });
+        
+                        const caption = document.createElement('div');
+                        caption.className = 'gallery-caption';
+                        caption.textContent = file.name.replace(/\.[^/.]+$/, ""); // Remove a extensão do nome do arquivo
+        
+                        const galleryItem = document.createElement('div');
+                        galleryItem.className = 'gallery-item';
+                        galleryItem.appendChild(imgElement);
+                        galleryItem.appendChild(caption);
+        
+                        gallery.appendChild(galleryItem);
+                    }
+                });
+            })
+            .catch(error => console.error('Erro ao carregar as imagens:', error));
+        }
+
         // Carrega arquivos automaticamente na inicialização
         fetchFiles();
         document.getElementById('github-button').href = `https://github.com/${owner}/${repo}/tree/main`;
-        
+
         document.getElementById('back-button').addEventListener('click', function () {
             if (pathStack.length > 0) {
                 const prevPath = pathStack.pop();
@@ -197,6 +281,8 @@
                 }
             }
         });
+
+
     </script>
 </body>
 
