@@ -199,7 +199,7 @@
                     // Atualiza o caminho atual e o href do botão "Ir para o GitHub da Pasta Atual"
                     //const githubButton = document.getElementById('github-button');
                     const currentPathDisplay = document.getElementById('current-path');
-                    currentPathDisplay.textContent = `Listando: ${(path ? path : 'main')}`;
+                    currentPathDisplay.textContent = `Listandoo: ${(path ? path : 'main')}`;
                 })
                 .catch(error => {
                     console.error('Erro ao buscar arquivos do repositório:', error);
@@ -236,9 +236,9 @@
             .then(data => {
                 gallery.innerHTML = '';
                 data.forEach(file => {
-                    if (file.type === 'file' && file.name.match(/\.(jpg|jpeg|png|gif)$/)) {
+                    if (file.type === 'file' && file.name.match(/\.(jpg|jpeg|png|gif)$/) && (!file.name.includes("-sm"))) {
                         const imgElement = document.createElement('img');
-                        imgElement.src = file.download_url;
+                        imgElement.src = file.download_url.replace(".png", "-sm.jpg");
                         imgElement.className = 'gallery-image';
         
                         // Adiciona um event listener para abrir a imagem em uma nova aba quando clicada
