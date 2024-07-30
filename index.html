@@ -12,6 +12,10 @@
         body {
             background-color: #1a1a1a;
             color: #e6e6e6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
         }
 
         header {
@@ -38,15 +42,12 @@
         }
 
         footer {
-            position: fixed;
-            left: 0;
-            bottom: 0;
-            width: 100%;
             text-align: center;
             padding: 10px 0;
             background-color: #111;
             color: #e6e6e6;
             margin-top: 20px;
+            flex-shrink: 0;
         }
 
         .option-container {
@@ -76,6 +77,7 @@
 
         #content {
             margin-top: 30px;
+            flex: 1;
         }
     </style>
 </head>
@@ -109,7 +111,7 @@
     </div>
 
     <footer>
-        Autor: Christofer Daniel
+        Autor: Christofer Daniel | Orientador: João Fabrício
     </footer>
 
     <script>
@@ -119,7 +121,7 @@
                 .then(html => {
                     const contentDiv = document.getElementById('content');
                     contentDiv.innerHTML = html;
-                    
+
                     // Executa o JavaScript contido no HTML carregado
                     const scripts = contentDiv.getElementsByTagName('script');
                     for (let script of scripts) {

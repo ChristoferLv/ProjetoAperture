@@ -80,7 +80,7 @@
             /* Cor do polegar ao passar o mouse */
         }
 
-       .gallery {
+        .gallery {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 10px;
@@ -102,6 +102,18 @@
             margin-top: 5px;
             color: #e6e6e6;
             font-size: 14px;
+        }
+
+        a {
+            color: #e6e6e6;
+            /* Branco */
+            text-decoration: none;
+            /* Remove o sublinhado */
+        }
+
+        a:hover {
+            color: #c0c0c0;
+            /* Cor ligeiramente diferente para o hover, se desejar */
         }
     </style>
 </head>
@@ -135,7 +147,7 @@
             </table>
         </div>
     </div>
-  
+
     <script>
         const owner = 'ChristoferLv';
         const repo = 'Aperture-Releases';
@@ -226,40 +238,40 @@
             const gallery = document.getElementById('gallery');
             const path = `pictures/${type}`;
             const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`;
-        
+
             fetch(url, {
                 headers: {
                     'Accept': 'application/vnd.github.v3+json'
                 }
             })
-            .then(response => response.json())
-            .then(data => {
-                gallery.innerHTML = '';
-                data.forEach(file => {
-                    if (file.type === 'file' && file.name.match(/\.(jpg|jpeg|png|gif)$/) && (!file.name.includes("-sm"))) {
-                        const imgElement = document.createElement('img');
-                        imgElement.src = file.download_url.replace(".png", "-sm.jpg");
-                        imgElement.className = 'gallery-image';
-        
-                        // Adiciona um event listener para abrir a imagem em uma nova aba quando clicada
-                        imgElement.addEventListener('click', () => {
-                            window.open(file.download_url, '_blank');
-                        });
-        
-                        const caption = document.createElement('div');
-                        caption.className = 'gallery-caption';
-                        caption.textContent = file.name.replace(/\.[^/.]+$/, ""); // Remove a extensão do nome do arquivo
-        
-                        const galleryItem = document.createElement('div');
-                        galleryItem.className = 'gallery-item';
-                        galleryItem.appendChild(imgElement);
-                        galleryItem.appendChild(caption);
-        
-                        gallery.appendChild(galleryItem);
-                    }
-                });
-            })
-            .catch(error => console.error('Erro ao carregar as imagens:', error));
+                .then(response => response.json())
+                .then(data => {
+                    gallery.innerHTML = '';
+                    data.forEach(file => {
+                        if (file.type === 'file' && file.name.match(/\.(jpg|jpeg|png|gif)$/) && (!file.name.includes("-sm"))) {
+                            const imgElement = document.createElement('img');
+                            imgElement.src = file.download_url.replace(".png", "-sm.jpg");
+                            imgElement.className = 'gallery-image';
+
+                            // Adiciona um event listener para abrir a imagem em uma nova aba quando clicada
+                            imgElement.addEventListener('click', () => {
+                                window.open(file.download_url, '_blank');
+                            });
+
+                            const caption = document.createElement('div');
+                            caption.className = 'gallery-caption';
+                            caption.textContent = file.name.replace(/\.[^/.]+$/, ""); // Remove a extensão do nome do arquivo
+
+                            const galleryItem = document.createElement('div');
+                            galleryItem.className = 'gallery-item';
+                            galleryItem.appendChild(imgElement);
+                            galleryItem.appendChild(caption);
+
+                            gallery.appendChild(galleryItem);
+                        }
+                    });
+                })
+                .catch(error => console.error('Erro ao carregar as imagens:', error));
         }
 
         // Carrega arquivos automaticamente na inicialização
